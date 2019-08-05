@@ -23,12 +23,12 @@ const Game = mongoose.model('Game', {
         required: true
     },
     likes: { type: Number },
-    comments: {
-        user: { type: String },
-        message: { type: String },
-        dateCreated: { type: Date },
-        likes: { type: Number }
-    }
+    comments: [{
+        user: String,
+        message: String,
+        dateCreated: Date,
+        likes: Number
+    }]
 });
 
 module.exports = Game;
