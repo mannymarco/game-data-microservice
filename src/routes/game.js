@@ -1,18 +1,8 @@
 const express = require('express');
+const moment = require('moment');
 const Game = require('../models/game');
 const router = new express.Router();
 
-function getNextSequence(name) {
-    var ret = db.counters.findAndModify(
-        {
-            query: { _id: name },
-            update: { $inc: { seq: 1 } },
-            new: true
-        }
-    );
-
-    return ret.seq;
-}
 
 router.post('/games', async (req, res) => {
     const game = new Game(req.body);
@@ -26,18 +16,18 @@ router.post('/games', async (req, res) => {
 
 
 
-// router.get('/games/:id', async (req, res) => {
-//     const _id = req.params.id;
-//     try {
-//         const game = await Game.findById(_id);
-//         if (!game) {
-//             return res.status(404).send();
-//         }
-//         return res.send(game);
-//     } catch (e) {
-//         res.status(500).send();
-//     }
-// })
+router.get('/games/:id', async (req, res) => {
+    const _id = req.params.id;
+    try {
+        const game = await Game.findById(_id);
+        if (!game) {
+            return res.status(404).send();
+        }
+        return res.send(game);
+    } catch (e) {
+        res.status(500).send();
+    }
+})
 
 router.get('/games', async (req, res) => {
     try {
@@ -49,7 +39,7 @@ router.get('/games', async (req, res) => {
 })
 
 
-router.get('/games/report', async (req, res) => {
+router.get('/report', async (req, res) => {
     try {
 
         // The user with the most comments
@@ -63,14 +53,13 @@ router.get('/games/report', async (req, res) => {
         ])
 
         // The game with the most likes
-        const mostLikesReport = await Game.find({}, { _id: 0, title: 1, "highest_rated_game": "$_id"}).sort({ "like": -1 }).limit(1);
+        const mostLikesReport = await Game.find({}, { _id: 0, title: "highest_rated_game"}).sort({ "like": -1 }).limit(1);
 
         // The average rating of each game
         const averageRatingReport = await Game.aggregate([
-            { $project: { _id : 0, "title": 1, avgRating: { $avg: "$comments.rating" }}}
-        ])
-
-        const response = 
+            { $project: { _id : 0, "title": 1, avgRating: { $avg: "$comments.rating" }}},
+            { $project: { _id: 0, "title": 1, roundedAvg: { $ceil: '$avgRating' }}}
+        ]);
 
         res.send([topCommentsReport, mostLikesReport, averageRatingReport]);
 
