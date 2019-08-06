@@ -15,9 +15,9 @@
 
 ### Game Id's
 
-- http://localhost:8080/5d49d8933c9293348cd25d58
-- http://localhost:8080/5d49d8933c9293348cd25d59
-- http://localhost:8080/5d49d8933c9293348cd25d5a
+- `5d49d8933c9293348cd25d58`
+- `5d49d8933c9293348cd25d59`
+- `5d49d8933c9293348cd25d5a`
 
 ## Changes/Assumptions
 
