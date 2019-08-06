@@ -51,21 +51,31 @@ router.get('/games', async (req, res) => {
 
 router.get('/games/report', async (req, res) => {
     try {
-        // The game with the highest sum of likes
 
-        const report = await Game.aggregate([
-            { $project: { "comments.user": 1, _id: 0 }},
-            { $unwind: "$comments"}, { $sortByCount: "$comments.user" }
+        // The user with the most comments
+        const topCommentsReport = await Game.aggregate([
+            
+            { $unwind: "$comments" }, 
+            { $sortByCount: "$comments.user" },
+            { $limit: 1},
+            { $project: { "_id": 0, "user_with_most_comments": "$_id" }}
+            
         ])
 
-       
+        // The game with the most likes
+        const mostLikesReport = await Game.find({}, { _id: 0, title: 1, "highest_rated_game": "$_id"}).sort({ "like": -1 }).limit(1);
 
+        // The average rating of each game
+        const averageRatingReport = await Game.aggregate([
+            { $project: { _id : 0, "title": 1, avgRating: { $avg: "$comments.rating" }}}
+        ])
 
-        res.send([report]);
+        const response = 
+
+        res.send([topCommentsReport, mostLikesReport, averageRatingReport]);
+
     } catch (e) {
-        console.log('fuck sake', e)
         res.status(500).send(e);
-
     }
 })
 
