@@ -53,8 +53,7 @@ router.get('/report', async (req, res) => {
         ])
 
         // The game with the most likes
-        const mostLikesReport = await Game.find({}, { _id: 0, title: "highest_rated_game"}).sort({ "like": -1 }).limit(1);
-
+        const mostLikesReport = await Game.find({}, { _id: 0, title: "highest_rated_game"}).sort({ "likes": -1 }).limit(1);
         // The average rating of each game
         const averageRatingReport = await Game.aggregate([
             { $project: { _id : 0, "title": 1, avgRating: { $avg: "$comments.rating" }}},
