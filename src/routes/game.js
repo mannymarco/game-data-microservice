@@ -14,8 +14,6 @@ router.post('/games', async (req, res) => {
     }
 });
 
-
-
 router.get('/games/:id', async (req, res) => {
     const _id = req.params.id;
     try {
