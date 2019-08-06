@@ -22,14 +22,16 @@ const Game = mongoose.model('Game', {
         type: String,
         required: true
     },
-    likes: { type: Number },
+    like: { type: Number },
     comments: [{
         user: String,
         message: String,
-        dateCreated: Date,
+        dateCreated: Number,
         likes: Number
     }]
 });
+
+Game.aggregate
 
 module.exports = Game;
 
